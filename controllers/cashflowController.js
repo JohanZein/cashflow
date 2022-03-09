@@ -2,12 +2,12 @@ const Cashflow = require('../models/cashflowModel');
 
 
 const getCashflows = async (req, res) => {
-  try {
-    const cashflows = await Cashflow.find();
-    res.status(200).json(cashflows);
-  } catch (error) {
-    res.status(500).json({message: error.message});
-  }
+  const cashflows = await Cashflow.find();
+  res.render('cashflow', {
+    title: 'CashFlow',
+    layout: 'layouts/main-layouts',
+    cashflows
+  });
 };
 
 

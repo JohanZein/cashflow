@@ -1,7 +1,8 @@
 const express = require('express');
-// const expressLayouts = require('express-ejs-layouts');
+const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const Cashflow = require('./routers/cashflowRouter');
+const morgan = require('morgan');
 
 const app = express();
 const port = 3000;
@@ -12,17 +13,34 @@ db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Database connected...'))
 
 app.use(express.json());
+app.use(morgan('dev'));
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.use(express.static('publics'));
+app.use(express.urlencoded({ extended: true }));
+
 
 app.get('/', (req, res) => {
-  res.send('Landing page...');
+  res.render('index', {
+    title: 'Home',
+    layout: 'layouts/main-layouts'
+  });
 });
 
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About',
+    layout: 'layouts/main-layouts'
+  });
+});
+
+
 app.use('/', Cashflow);
+
 
 app.use('/', (req, res) => {
   res.send('Nothing here...');
 });
-
 
 
 app.listen(port, () => {
