@@ -1,0 +1,55 @@
+<script type="text/javascript">
+
+  function load_cashflowTable() {
+    $('#cashflowTable').DataTable({
+      destroy: true,
+      responsive: false,
+      autoWidth: false,
+      paging: true,
+      pagingType: "first_last_numbers",
+      info: false,
+      searching: true,
+      processing: true,
+      serverSide: true,
+      ordering: false,
+      autoFill: true,
+      lengthChange: true,
+      aLengthMenu: [
+        [5,10,15,20],
+        [5,10,15,20]
+      ],
+      order: [],
+      ajax: {
+        url: "/cashflow/dt",
+        type: "post"
+      },
+      // dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 my-auto'f>>" +
+      //   "<'row'<'col-sm-12'tr>>" +
+      //   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+      // columnDefs: [
+      //   {
+      //     targets: [0, 2, 3, 4, 5],
+      //     className: "text-center align-middle"
+      //   },
+      //   {
+      //     targets: [1],
+      //     className: "text-left align-middle"
+      //   },
+      // ],
+      // mengubah tabel setelah selesai di panggil
+      initComplete: function(settings, json) {
+        $('#cashflowTable_wrapper').find('label').each(function() {
+          $(this).parent().append($(this).children());
+        });
+        $('#cashflowTable_wrapper').find('label').remove();
+        $('#cashflowTable_length').children().addClass('form-control-sm');
+        $('#cashflowTable_filter input').attr('Placeholder', 'Pencarian...');
+      }
+    });
+  };
+
+  $(document).ready(function () {
+    load_cashflowTable();
+    console.log('Percobaan saja...');
+  });
+</script>

@@ -23,14 +23,18 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.render('index', {
     title: 'Home',
-    layout: 'layouts/main-layouts'
+    layout: 'layouts/main-layouts',
+    script: '',
+    path: 'home',
   });
 });
 
 app.get('/about', (req, res) => {
   res.render('about', {
     title: 'About',
-    layout: 'layouts/main-layouts'
+    layout: 'layouts/main-layouts',
+    script: '',
+    path: req.path.split('/')[1],
   });
 });
 

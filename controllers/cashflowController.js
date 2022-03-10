@@ -1,13 +1,37 @@
 const Cashflow = require('../models/cashflowModel');
 
+const index = (req, res) => {
+  res.render('cashflow/index', {
+    title: 'CashFlow',
+    layout: 'layouts/main-layouts',
+    script: '../cashflow/script',
+    path: req.path.split('/')[1],
+  });
+};
+
 
 const getCashflows = async (req, res) => {
   const cashflows = await Cashflow.find();
-  res.render('cashflow', {
-    title: 'CashFlow',
-    layout: 'layouts/main-layouts',
-    cashflows
+  const count = await Cashflow.count();
+
+  let dataSource = Array();
+  cashflows.forEach((dt, i) => { i++
+    dataSource.push([
+      i++,
+      dt.nama,
+      dt.transaksi,
+      dt.jumlah,
+      dt.jumlah
+    ]);
   });
+  // console.log(dataSource);
+
+  const dataTables = {
+    recordsTotal: count,
+    recordsFiltered: 1,
+    data: dataSource
+  }
+  res.json(dataTables);
 };
 
 
@@ -60,6 +84,7 @@ const deleteCashflow = async (req, res) => {
 
 
 module.exports = {
+  index,
   getCashflows,
   getCashflowById,
   saveCashflow,
