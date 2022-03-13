@@ -1,40 +1,63 @@
   <div class="row mt-4">
     <div class="col">
-      <div class="card">
-        <div class="card-body pb-0">
+      <div class="card shadow-sm">
+        <div class="card-body">
           <div class="row">
-            <div class="col col-md">
-              <form class="form-inline">
-                <div class="form-group mb-2">
-                  <input type="date" class="form-control" name="tglMulai" id="tglMulai">
-                </div>
-                <div class="form-group mx-sm-2 mb-2">
-                  <input type="date" class="form-control" name="tglAkhir" id="tglAkhir">
-                </div>
-                <button type="button" class="btn btn-primary mb-2">Pilih</button>
-              </form>
-              
+            <div class="col">
+              <h1 class="display-4">Cash Flow</h1>
+              <p class="lead">
+                Aplikasi cash flow sederhana untuk pencatatan keuangan pribadi atau usaha kecil menengah,
+                hanya terbatas pada pengeluaran dan pemasukan.
+              </p>
             </div>
           </div>
-        </div>
-        <div class="card-body">
-          <table id="cashflowTable" name="cashflowTable" class="table">
-            <thead>
-              <th>No</th>
-              <th>Item</th>
-              <th>Transaksi</th>
-              <th>Kredit</th>
-              <th>Debet</th>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-            </tfoot>
-          </table>
+          <div class="row">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">
+                  <nav class="nav nav-pills flex-column flex-sm-row">
+                    <a class="text-center nav-link active" href="#">Active</a>
+                    <a class="text-center nav-link" href="#">Longer nav link</a>
+                    <!-- <a class="flex-sm-fill text-sm-center nav-link" href="#">Link</a>
+                    <a class="flex-sm-fill text-sm-center nav-link disabled">Disabled</a> -->
+                  </nav>
+                </div>
+                <!-- <div class="card-header">
+                  <div class="form-inline">
+                    <div class="form-group mr-2">
+                      <button type="button" class="btn btn-info">Tambah Data</button>
+                    </div>
+                    <div class="form-group mr-2">
+                      <input type="date" class="form-control" name="tglMulai" id="tglMulai">
+                    </div>
+                    <div class="form-group mr-2">
+                      <input type="date" class="form-control" name="tglAkhir" id="tglAkhir">
+                    </div>
+                    <button type="button" class="btn btn-primary">Tampilkan Data</button>
+                  </div>
+                </div> -->
+                <div class="card-body">
+                  <table id="cashflowTable" name="cashflowTable" class="table table-responsive">
+                    <thead class="bg-dark text-white">
+                      <th>No</th>
+                      <th class="w-100">Item</th>
+                      <th>Transaksi</th>
+                      <th>Kredit</th>
+                      <th>Debet</th>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot class="bg-dark">
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

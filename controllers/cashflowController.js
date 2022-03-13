@@ -11,7 +11,13 @@ const index = (req, res) => {
 
 
 const getCashflows = async (req, res) => {
-  const cashflows = await Cashflow.find();
+  const query = {
+    nama: {
+      $regex: req.body.search.value, $options: 'i'
+    }
+  };
+  const cashflows = await Cashflow.find(query);
+  const countFiltered = await Cashflow.find(query).count();
   const count = await Cashflow.count();
 
   let dataSource = Array();
@@ -24,11 +30,10 @@ const getCashflows = async (req, res) => {
       dt.jumlah
     ]);
   });
-  // console.log(dataSource);
 
   const dataTables = {
     recordsTotal: count,
-    recordsFiltered: 1,
+    recordsFiltered: countFiltered,
     data: dataSource
   }
   res.json(dataTables);
