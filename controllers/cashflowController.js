@@ -1,10 +1,14 @@
+const dateFormat = require('dateformat');
 const Cashflow = require('../models/cashflowModel');
+
+const now = new Date()
 
 const index = (req, res) => {
   res.render('cashflow/index', {
     title: 'CashFlow',
     layout: 'layouts/main-layouts',
     script: '../cashflow/script',
+    tanggal: dateFormat(now, "yyyy-mm-dd"),
     path: req.path.split('/')[1],
   });
 };

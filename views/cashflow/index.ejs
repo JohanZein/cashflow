@@ -15,27 +15,25 @@
             <div class="col">
               <div class="card">
                 <div class="card-header">
-                  <nav class="nav nav-pills flex-column flex-sm-row">
-                    <a class="text-center nav-link active" href="#">Active</a>
-                    <a class="text-center nav-link" href="#">Longer nav link</a>
-                    <!-- <a class="flex-sm-fill text-sm-center nav-link" href="#">Link</a>
-                    <a class="flex-sm-fill text-sm-center nav-link disabled">Disabled</a> -->
+                  <nav class="nav flex-column flex-sm-row text-center">
+                    <button type="button" class="btn btn-link text-decoration-none">Tambah Data</button>
+                    <button type="button" class="btn btn-link text-decoration-none" onclick="refresh_table();">Refresh Data</button>
+                    <button type="button" class="btn btn-link text-decoration-none" data-toggle="collapse" data-target="#collapseFilter">Filter Data</button>
                   </nav>
-                </div>
-                <!-- <div class="card-header">
-                  <div class="form-inline">
-                    <div class="form-group mr-2">
-                      <button type="button" class="btn btn-info">Tambah Data</button>
+                  <div class="collapse" id="collapseFilter">
+                    <div class="card card-body mt-2 flex-column text-center">
+                      <div class="form-inline">
+                        <div class="form-group mb-2">
+                          <input type="date" class="form-control" id="tglMulai" value="<%= tanggal %>">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                          <input type="date" class="form-control" id="tglAkhir" value="<%= tanggal %>">
+                        </div>
+                        <button type="button" class="btn btn-primary mb-2">Tampilkan</button>
+                      </div>
                     </div>
-                    <div class="form-group mr-2">
-                      <input type="date" class="form-control" name="tglMulai" id="tglMulai">
-                    </div>
-                    <div class="form-group mr-2">
-                      <input type="date" class="form-control" name="tglAkhir" id="tglAkhir">
-                    </div>
-                    <button type="button" class="btn btn-primary">Tampilkan Data</button>
                   </div>
-                </div> -->
+                </div>
                 <div class="card-body">
                   <table id="cashflowTable" name="cashflowTable" class="table table-responsive">
                     <thead class="bg-dark text-white">

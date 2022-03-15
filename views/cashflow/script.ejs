@@ -1,7 +1,8 @@
 <script type="text/javascript">
+  var cashflowTable = $('#cashflowTable')  
 
   function load_cashflowTable() {
-    $('#cashflowTable').DataTable({
+    cashflowTable.DataTable({
       destroy: true,
       responsive: false,
       autoWidth: false,
@@ -26,16 +27,16 @@
       // dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 my-auto'f>>" +
       //   "<'row'<'col-sm-12'tr>>" +
       //   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-      // columnDefs: [
-      //   {
-      //     targets: [0, 2, 3, 4, 5],
-      //     className: "text-center align-middle"
-      //   },
-      //   {
-      //     targets: [1],
-      //     className: "text-left align-middle"
-      //   },
-      // ],
+      columnDefs: [
+        {
+          targets: [0, 2, 3, 4],
+          className: "text-center align-middle"
+        },
+        {
+          targets: [1],
+          className: "text-left align-middle"
+        },
+      ],
       // mengubah tabel setelah selesai di panggil
       initComplete: function(settings, json) {
         $('#cashflowTable_wrapper').find('label').each(function() {
@@ -47,9 +48,14 @@
       }
     });
   };
-
+  
+  function refresh_table() {
+    console.log('Refresh Table');
+    cashflowTable.DataTable().ajax.reload(null, false);
+  };
   $(document).ready(function () {
     load_cashflowTable();
     console.log('Percobaan saja...');
+
   });
 </script>
