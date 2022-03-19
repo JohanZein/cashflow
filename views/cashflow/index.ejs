@@ -16,35 +16,81 @@
               <div class="card">
                 <div class="card-header">
                   <nav class="nav flex-column flex-sm-row text-center">
-                    <button type="button" class="btn btn-link text-decoration-none">Tambah Data</button>
+                    <button type="button" class="btn btn-link text-decoration-none" onclick="clear_form();" data-toggle="modal" data-target="#tambahDataModal">Tambah Data</button>
                     <button type="button" class="btn btn-link text-decoration-none" onclick="refresh_table();">Refresh Data</button>
                     <button type="button" class="btn btn-link text-decoration-none" data-toggle="collapse" data-target="#collapseFilter">Filter Data</button>
                   </nav>
                   <div class="collapse" id="collapseFilter">
                     <div class="card card-body mt-2 flex-column text-center">
-                      <div class="form-inline">
-                        <div class="form-group mb-2">
-                          <input type="date" class="form-control" id="tglMulai" value="<%= tanggal %>">
+                      <form class="form-inline">
+                        <div class="form-group mr-sm-2">
+                          <input type="month" class="form-control" id="bulan" name="bulan" value="<%= bulan %>">
                         </div>
-                        <div class="form-group mx-sm-3 mb-2">
-                          <input type="date" class="form-control" id="tglAkhir" value="<%= tanggal %>">
+                        <button type="button" id="simpanTest" onclick="load_cashflowTable($('#bulan').val());" class="btn btn-primary">Tampilkan</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="tambahDataModal">
+                  <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Cash Flow Data</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form id="cashflowForm" name="cashflowForm">
+                          <div class="form-group">
+                            <label for="tanggal">Tanggal</label>
+                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="<%= tanggal %>">
+                          </div>
+                          <div class="form-group">
+                            <label for="nama">Keterangan</label>
+                            <input type="text" class="form-control text-capitalize" id="nama" name="nama">
+                          </div>
+                          <div class="form-group">
+                            <label for="transaksi">Transaksi</label>
+                            <select class="custom-select" id="transaksi" name="transaksi">
+                              <option selected>Pilih transaksi</option>
+                              <option value="false">Kredit</option>
+                              <option value="true">Debet</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="jumlah">Biaya / Jumlah</label>
+                            <input type="number" class="form-control" id="jumlah" name="jumlah">
+                          </div>
+                          <input type="hidden" class="form-control" id="_id" name="_id">
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <div class="row col d-flex justify-content-between p-0">
+                          <button type="button" onclick="tambah_cashflow();" class="btn btn-primary save">Tambah Cash Flow</button>
+                          <button type="button" onclick="update_cashflow();" class="btn btn-primary update">Perbarui Cash Flow</button>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                         </div>
-                        <button type="button" class="btn btn-primary mb-2">Tampilkan</button>
                       </div>
                     </div>
                   </div>
                 </div>
+
                 <div class="card-body">
-                  <table id="cashflowTable" name="cashflowTable" class="table table-responsive">
+                  <table id="cashflowTable" name="cashflowTable" class="table table-responsive table-bordered table-hover table-sm">
                     <thead class="bg-dark text-white">
-                      <th>No</th>
-                      <th class="w-100">Item</th>
-                      <th>Transaksi</th>
-                      <th>Kredit</th>
-                      <th>Debet</th>
+                      <th class="text-center">No</th>
+                      <th class="text-center">Tanggal</th>
+                      <th class="w-100">Keterangan</th>
+                      <th class="text-center">Kredit</th>
+                      <th class="text-center">Debet</th>
+                      <th class="w-100">Action</th>
                     </thead>
                     <tbody></tbody>
                     <tfoot class="bg-dark">
+                      <th></th>
                       <th></th>
                       <th></th>
                       <th></th>

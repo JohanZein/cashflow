@@ -15,9 +15,9 @@ Content-Type: application/json
 
 {
   "tanggal": 1646809200,
-  "nama": "HD dr Viza",
-  "transaksi": true,
-  "jumlah": 75000
+  "nama": "Pasien Umum",
+  "transaksi": false,
+  "jumlah": 250000
 }
 
 ###
