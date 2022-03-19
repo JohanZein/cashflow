@@ -13,12 +13,10 @@ const index = (req, res) => {
     bulan: dateFormat(now, "yyyy-mm"),
     path: req.path.split('/')[1],
   });
-  // console.log(dateFormat(now, "yyyy-mm-dd"));
 };
 
 
 const getCashflows = async (req, res) => {
-  // console.log(new Date(req.body.tanggal * 1000).getMonth());
   const query = {
     tanggal: {
       $gt: req.body.bulanIni,
@@ -92,12 +90,15 @@ const saveCashflow = async (req, res) => {
 
 
 const updateCashflow = async (req, res) => {
+  console.log(req.body);
   try {
     const cashflows = await Cashflow.updateOne(
       { _id: req.body._id },
       { $set: req.body }
     );
+    // console.log(cashflows);
     console.log('Updated...');
+    // res.status(200).json({status: true});
     res.status(200).json(cashflows);
   } catch (error) {
     res.status(400).json({message: error.message});

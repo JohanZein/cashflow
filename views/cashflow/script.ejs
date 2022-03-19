@@ -17,7 +17,10 @@
 
   function update_cashflow() {
     var data = $('#cashflowForm').serializeArray();
-    data.splice(0, 1, {
+    var newData = data.filter(function (val) {
+      return val.name !== 'tanggal';
+    });
+    newData.push({
         name: 'tanggal',
         value: Date.parse(data[0].value) / 1000
     });
@@ -25,7 +28,7 @@
     reqAJAX = $.ajax({
       url: `/cashflow`,
       type: 'put',
-      data: data,
+      data: newData,
       dataType: 'JSON'
     });
     reqAJAX.fail(function (res) {
@@ -104,8 +107,8 @@
     var t = new Date(req_tanggal);
     var bulanIni = Date.parse(req_tanggal) / 1000;
     var bulanDepan = Date.parse(new Date(t.setMonth(t.getMonth()+1))) / 1000;
-    console.log(`Bulan Ini ${bulanIni}`);
-    console.log(`Bulan Depan ${bulanDepan}`);
+    // console.log(`Bulan Ini ${bulanIni}`);
+    // console.log(`Bulan Depan ${bulanDepan}`);
 
     // var y = t.toLocaleDateString("id-ID", { year: 'numeric' });
     // var m = t.toLocaleDateString("id-ID", { month: '2-digit' });
@@ -134,7 +137,8 @@
         dataType: "JSON",
         data: { bulanIni, bulanDepan }
       },
-      dom: "<'row d-flex'<'col-sm-12 col-md-auto my-auto my-sm-1'l><'col-sm-12 col-md-auto'B><'col-sm-12 col-md-auto ml-auto my-auto'f>>" +
+      dom: "<'row d-flex'<'col-sm-12 col-md-auto my-auto my-sm-1'l>" +
+        "<'col-sm-12 col-md-auto'B><'col-sm-12 col-md-auto ml-auto my-auto'f>>" +
         "<'row'<'col-sm-12'tr>>" +
         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
       columnDefs: [
@@ -157,7 +161,7 @@
       // }],
       // mengubah tabel setelah selesai di panggil
       initComplete: function(settings, json) {
-        console.log(settings);
+        // console.log(settings);
         $('#cashflowTable_wrapper').find('label').each(function() {
           $(this).parent().append($(this).children());
         });
@@ -170,7 +174,7 @@
 
   $(document).ready(function () {
     console.log('Loaded...');
-    console.log('<%= tanggal %>');
+    // console.log('<%= tanggal %>');
     load_cashflowTable($('#bulan').val());
 
   });
