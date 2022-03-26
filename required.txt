@@ -7,5 +7,6 @@ npm i express-validator@6.14.0
 npm i mongoose@6.2.4
 npm i morgan@1.10.0
 npm i dateformat@4.6.3
+npm i method-override
 
-npm i ejs@3.1.6 express@4.17.3 express-ejs-layouts@2.5.1 express-validator@6.14.0 mongoose@6.2.4 morgan@1.10.0 dateformat@4.6.3
+npm i ejs@3.1.6 express@4.17.3 express-ejs-layouts@2.5.1 express-validator@6.14.0 mongoose@6.2.4 morgan@1.10.0 dateformat@4.6.3 method-override
