@@ -1,28 +1,17 @@
 <script type="text/javascript">
-  function delete_cashflow(temp_id) {
-    if (confirm('Data yang dihapus tidak dapat di kembalikan, Anda yakin?')) {
-      reqAJAX = $.ajax({
-        url: `/cashflow/${temp_id}`,
-        type: 'delete',
-        dataType: 'JSON'
-      });
-      reqAJAX.fail(function (res) {
-        alert(res.responseJSON.message);
-      });
-      reqAJAX.done(function () {
-        refresh_table();
-      });
-    };
-  };
+  var cashflowTable = $('#cashflowTable');
+  var reportTable = $('#reportTable');
 
+
+  // Update, Perbarui
   function update_cashflow() {
     var data = $('#cashflowForm').serializeArray();
     var newData = data.filter(function (val) {
       return val.name !== 'tanggal';
     });
     newData.push({
-        name: 'tanggal',
-        value: Date.parse(data[0].value) / 1000
+      name: 'tanggal',
+      value: Date.parse(data[0].value) / 1000
     });
 
     reqAJAX = $.ajax({
@@ -40,12 +29,14 @@
     });
   };
 
+
+  // Save, Simpan
   function tambah_cashflow() {
     var data = $('#cashflowForm').serializeArray();
     data.pop();
     data.splice(0, 1, {
-        name: 'tanggal',
-        value: Date.parse(data[0].value) / 1000
+      name: 'tanggal',
+      value: Date.parse(data[0].value) / 1000
     });
 
     reqAJAX = $.ajax({
@@ -63,31 +54,65 @@
     });
   };
 
-  function detail_cashflow(temp_id) {
-    reqAJAX = $.ajax({
-      url: `/cashflow/${temp_id}`,
-      type: 'get',
-      dataType: 'JSON'
-    });
-    reqAJAX.fail(function (res) {
-      alert(res.responseJSON.message);
-    });
-    reqAJAX.done(function (res) {
-      if (res) {
-        var t = new Date(res.tanggal * 1000);
-        var y = t.toLocaleDateString("id-ID", { year: 'numeric' });
-        var m = t.toLocaleDateString("id-ID", { month: '2-digit' });
-        var d = t.toLocaleDateString("id-ID", { day: '2-digit' });
-        $('#tanggal').val(`${y}-${m}-${d}`);
-        $('#nama').val(res.nama);
-        $('#transaksi').val(`${res.transaksi}`);
-        $('#jumlah').val(res.jumlah);
-        $('#_id').val(res._id);
-        $('.save').addClass('d-none').next().removeClass('d-none');
-        $('#tambahDataModal').modal('show');
+  // Detail
+  cashflowTable.on('click', 'tbody button[data-update]', function () {
+    var temp_id = $(this).attr('data-id');
+    try {
+      if (temp_id == '') throw new Error('Empty id detected...');
+
+      reqAJAX = $.ajax({
+        url: `/cashflow/${temp_id}`,
+        type: 'get',
+        dataType: 'JSON',
+      });
+      reqAJAX.fail(function (res) {
+        alert(res.responseJSON.message);
+      });
+      reqAJAX.done(function (res) {
+        if (res) {
+          var t = new Date(res.tanggal * 1000);
+          var y = t.toLocaleDateString("id-ID", { year: 'numeric' });
+          var m = t.toLocaleDateString("id-ID", { month: '2-digit' });
+          var d = t.toLocaleDateString("id-ID", { day: '2-digit' });
+          $('#tanggal').val(`${y}-${m}-${d}`);
+          $('#nama').val(res.nama);
+          $('#transaksi').val(`${res.transaksi}`);
+          $('#jumlah').val(res.jumlah);
+          $('#_id').val(res._id);
+          $('.save').addClass('d-none').next().removeClass('d-none');
+          $('#tambahDataModal').modal('show');
+        };
+      });
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+
+  // Delete, Hapus
+  cashflowTable.on('click', 'tbody button[data-delete]', function () {
+    var temp_id = $(this).attr('data-id');
+    try {
+      if (temp_id == '') throw new Error('Empty id detected...');
+
+      if (confirm('Data yang dihapus tidak dapat di kembalikan, Anda yakin?')) {
+        reqAJAX = $.ajax({
+          url: `/cashflow/${temp_id}`,
+          type: 'delete',
+          dataType: 'JSON'
+        });
+        reqAJAX.fail(function (res) {
+          alert(res.responseJSON.message);
+        });
+        reqAJAX.done(function () {
+          refresh_table();
+        });
       };
-    });
-  };
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+  
 
   function clear_form() {
     $('#cashflowForm')[0].reset();
@@ -96,12 +121,11 @@
   };
 
 
-  var cashflowTable = $('#cashflowTable');
-
   function refresh_table() {
     console.log('Refresh Table');
     cashflowTable.DataTable().ajax.reload(null, false);
   };
+  
 
   function load_cashflowTable(req_tanggal) {
     var t = new Date(req_tanggal);
@@ -119,7 +143,7 @@
       autoWidth: false,
       paging: true,
       pagingType: "first_last_numbers",
-      info: true,
+      info: false,
       searching: true,
       processing: true,
       serverSide: true,
@@ -135,12 +159,12 @@
         url: "/cashflow/dt",
         type: "post",
         dataType: "JSON",
-        data: { bulanIni, bulanDepan }
+        data: { bulanIni, bulanDepan, get: "main" }
       },
       dom: "<'row d-flex'<'col-sm-12 col-md-auto my-auto my-sm-1'l>" +
         "<'col-sm-12 col-md-auto'B><'col-sm-12 col-md-auto ml-auto my-auto'f>>" +
         "<'row'<'col-sm-12'tr>>" +
-        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "<'row'<'col-sm-12 col-md-5 foot'><'col-sm-12 col-md-7'p>>",
       columnDefs: [
         {
           targets: [0, 1, 5],
@@ -155,13 +179,18 @@
           className: "text-right align-middle text-nowrap"
         },
       ],
-      buttons: ['excel'],
-      // buttons: [{
-      //   extend: 'excel'
-      // }],
+      buttons: [{
+        text: 'Report',
+        className: 'btn-warning buttons-excel buttons-html5',
+        action: function () {
+          $('#reportModal').modal('show');
+          load_reportTable($('#bulan').val());
+        }
+      }],
       // mengubah tabel setelah selesai di panggil
       initComplete: function(settings, json) {
-        // console.log(settings);
+        console.log(settings);
+        $('.foot').text(`Total ${json.recordsFiltered} data`).addClass('my-auto');
         $('#cashflowTable_wrapper').find('label').each(function() {
           $(this).parent().append($(this).children());
         });
@@ -172,10 +201,73 @@
     });
   };
 
+
+  function load_reportTable(req_tanggal) {
+    var t = new Date(req_tanggal);
+    var bulanIni = Date.parse(req_tanggal) / 1000;
+    var bulanDepan = Date.parse(new Date(t.setMonth(t.getMonth()+1))) / 1000;
+
+    reportTable.DataTable({
+      destroy: true,
+      responsive: false,
+      autoWidth: false,
+      paging: true,
+      pagingType: "first_last_numbers",
+      info: false,
+      searching: false,
+      processing: true,
+      serverSide: true,
+      ordering: false,
+      autoFill: true,
+      lengthChange: true,
+      aLengthMenu: [
+        [10, 20, 30, 40, 50],
+        [10, 20, 30, 40, 50]
+      ],
+      order: [],
+      ajax: {
+        url: "/cashflow/dt",
+        type: "post",
+        dataType: "JSON",
+        data: { bulanIni, bulanDepan, get: "report" }
+      },
+      dom: "<'row d-flex'<'col-sm-12 col-md-auto my-auto my-sm-1'l>" +
+        "<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto ml-auto my-auto foot'>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row'<'col-sm-12 col-md-5'B><'col-sm-12 col-md-7'p>>",
+      columnDefs: [
+        {
+          targets: [0, 1],
+          className: "text-center align-middle text-nowrap"
+        },
+        {
+          targets: [2],
+          className: "text-left align-middle text-nowrap"
+        },
+        {
+          targets: [3, 4],
+          className: "text-right align-middle text-nowrap"
+        },
+      ],
+      buttons: [{
+        extend: 'excel'
+      }],
+      // mengubah tabel setelah selesai di panggil
+      initComplete: function(settings, json) {
+        $('.foot').text(`Total ${json.recordsFiltered} data`).addClass('my-auto');
+        $('#reportTable_wrapper').find('label').each(function() {
+          $(this).parent().append($(this).children());
+        });
+        $('#reportTable_wrapper').find('label').remove();
+        $('#reportTable_length').children().addClass('form-control form-control-sm');
+        $('#reportTable_filter input').attr('Placeholder', 'Pencarian...');
+      }
+    });
+  };
+
+
   $(document).ready(function () {
     console.log('Loaded...');
-    // console.log('<%= tanggal %>');
     load_cashflowTable($('#bulan').val());
-
   });
 </script>

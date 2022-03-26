@@ -31,28 +31,52 @@ const getCashflows = async (req, res) => {
   const count = await Cashflow.count();
 
   let dataSource = Array();
-  cashflows.forEach((dt, i) => {
-    const kredit = () => {
-      if (!dt.transaksi) return FormatRupiah(dt.jumlah);
-      return '';
-    };
-    const debet = () => {
-      if (dt.transaksi) return FormatRupiah(dt.jumlah);
-      return '';
-    };
-    i++
-    dataSource.push([
-      parseInt(req.body.start) + i++,
-      dateFormat(dt.tanggal * 1000, "dd-mm-yyyy"),
-      dt.nama,
-      `<span class="font-weight-bold text-success">${kredit()}</span>`,
-      `<span class="font-weight-bold text-danger">${debet()}</span>`,
-      '<div class="btn-group">' +
-        `<button type="button" class="btn btn-sm btn-dark" onclick="detail_cashflow('${dt._id}')">Detail</button>` +
-        `<button type="button" class="btn btn-sm btn-danger" onclick="delete_cashflow('${dt._id}')">Delete</button>` +
-      '</div>'
-    ]);
-  });
+  
+  if (req.body.get == 'main') {
+    cashflows.forEach((dt, i) => {
+      const kredit = () => {
+        if (!dt.transaksi) return FormatRupiah(dt.jumlah);
+        return '';
+      };
+      const debet = () => {
+        if (dt.transaksi) return FormatRupiah(dt.jumlah);
+        return '';
+      };
+      i++
+      dataSource.push([
+        parseInt(req.body.start) + i++,
+        dateFormat(dt.tanggal * 1000, "dd-mm-yyyy"),
+        dt.nama,
+        `<span class="font-weight-bold text-success">${kredit()}</span>`,
+        `<span class="font-weight-bold text-danger">${debet()}</span>`,
+        '<div class="btn-group">' +
+          `<button type="button" class="btn btn-sm btn-dark" data-update data-id="${dt._id}">Detail</button>` +
+          `<button type="button" class="btn btn-sm btn-danger" data-delete data-id="${dt._id}">Delete</button>` +
+        '</div>'
+      ]);
+    });
+  };
+
+  if (req.body.get == 'report') {
+    cashflows.forEach((dt, i) => {
+      const kredit = () => {
+        if (!dt.transaksi) return dt.jumlah;
+        return '';
+      };
+      const debet = () => {
+        if (dt.transaksi) return dt.jumlah;
+        return '';
+      };
+      i++
+      dataSource.push([
+        parseInt(req.body.start) + i++,
+        dateFormat(dt.tanggal * 1000, "mm/dd/yyyy"),
+        dt.nama,
+        kredit(),
+        debet(),
+      ]);
+    });
+  };
 
   const dataTables = {
     draw: req.body.draw,
@@ -65,13 +89,18 @@ const getCashflows = async (req, res) => {
 
 
 const getCashflowById = async (req, res) => {
+  // console.log(req.body);
   // console.log(req.path);
   try {
-    const cashflows = await Cashflow.findOne({_id: req.params.id});
-    if (!cashflows) res.status(400).send('Nothing found...');
+    const cashflows = await Cashflow.findOne({ _id: req.params.id });
+    console.log(cashflows);
+    if (!cashflows) res.status(400).json({message: 'Nothing found...'});
     if (cashflows) res.status(200).json(cashflows);
   } catch (error) {
-    res.status(500).json({message: error.message});
+    res.status(500).json({
+      status: false,
+      message: error.message
+    });
   }
 };
 
