@@ -3,6 +3,7 @@ const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const Cashflow = require('./routers/cashflowRouter');
 const morgan = require('morgan');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ db.once('open', () => console.log('Database connected...'))
 
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.use(express.static('publics'));
