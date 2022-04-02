@@ -1,58 +1,92 @@
 <script type="text/javascript">
+  // Save Update, Simpan Perbarui
+  var validasiSaveCash = $('#cashflowForm').validate({
+    onkeyup: false,
+    submitHandler: function() {
+      var data = $('#cashflowForm').serializeArray();
+      var newData = data.filter(function (val) {
+        return val.name !== 'tanggal';
+      });
+      newData.push({
+        name: 'tanggal',
+        value: Date.parse(data[0].value) / 1000
+      });
+
+      if (data[4].value === '') {
+        newData = newData.filter(function (val) {
+          return val.name !== '_id';
+        });
+
+        reqAJAX = $.ajax({
+          url: `/cashflow`,
+          type: 'post',
+          data: newData,
+          dataType: 'JSON'
+        });
+      }
+
+      if (data[4].value !== '') {
+        reqAJAX = $.ajax({
+          url: `/cashflow`,
+          type: 'put',
+          data: newData,
+          dataType: 'JSON'
+        });
+      }
+
+      reqAJAX.fail(function (res) {
+        alert(res.responseJSON.message);
+      });
+      reqAJAX.done(function () {
+        $('#tambahDataModal').modal('hide');
+        refresh_table();
+      });
+    },
+    rules: {
+      tanggal: {
+        required: true
+      },
+      nama: {
+        required: true
+      },
+      transaksi: {
+        required: true
+      },
+      jumlah: {
+        required: true
+      },
+    },
+    messages: {
+      tanggal: {
+        required: "Tanggal masih kosong"
+      },
+      nama: {
+        required: "Keterangan masih kosong"
+      },
+      transaksi: {
+        required: "Silahkan pilih jenis transaksi"
+      },
+      jumlah: {
+        required: "Biaya / jumlah masih kosong"
+      },
+    },
+    errorElement: 'span',
+    errorPlacement: function(error, element) {
+      error.addClass('invalid-feedback');
+      element.parent().append(error);
+    },
+    highlight: function(element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function(element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+    }
+  });
+
+
   var cashflowTable = $('#cashflowTable');
   var reportTable = $('#reportTable');
 
-
-  // Update, Perbarui
-  function update_cashflow() {
-    var data = $('#cashflowForm').serializeArray();
-    var newData = data.filter(function (val) {
-      return val.name !== 'tanggal';
-    });
-    newData.push({
-      name: 'tanggal',
-      value: Date.parse(data[0].value) / 1000
-    });
-
-    reqAJAX = $.ajax({
-      url: `/cashflow`,
-      type: 'put',
-      data: newData,
-      dataType: 'JSON'
-    });
-    reqAJAX.fail(function (res) {
-      alert(res.responseJSON.message);
-    });
-    reqAJAX.done(function () {
-      $('#tambahDataModal').modal('hide');
-      refresh_table();
-    });
-  };
-
-
-  // Save, Simpan
-  function tambah_cashflow() {
-    var data = $('#cashflowForm').serializeArray();
-    data.pop();
-    data.splice(0, 1, {
-      name: 'tanggal',
-      value: Date.parse(data[0].value) / 1000
-    });
-
-    reqAJAX = $.ajax({
-      url: `/cashflow`,
-      type: 'post',
-      data: data,
-      dataType: 'JSON'
-    });
-    reqAJAX.fail(function (res) {
-      alert(res.responseJSON.message);
-    });
-    reqAJAX.done(function () {
-      $('#tambahDataModal').modal('hide');
-      refresh_table();
-    });
-  };
 
   // Detail
   cashflowTable.on('click', 'tbody button[data-update]', function () {
@@ -79,7 +113,6 @@
           $('#transaksi').val(`${res.transaksi}`);
           $('#jumlah').val(res.jumlah);
           $('#_id').val(res._id);
-          $('.save').addClass('d-none').next().removeClass('d-none');
           $('#tambahDataModal').modal('show');
         };
       });
@@ -115,9 +148,10 @@
   
 
   function clear_form() {
+    validasiSaveCash.resetForm();
+    $('#cashflowForm input, select').removeClass('is-invalid');
     $('#cashflowForm')[0].reset();
     $('#_id').val('');
-    $('.save').removeClass('d-none').next().addClass('d-none');
   };
 
 
@@ -131,12 +165,6 @@
     var t = new Date(req_tanggal);
     var bulanIni = Date.parse(req_tanggal) / 1000;
     var bulanDepan = Date.parse(new Date(t.setMonth(t.getMonth()+1))) / 1000;
-    // console.log(`Bulan Ini ${bulanIni}`);
-    // console.log(`Bulan Depan ${bulanDepan}`);
-
-    // var y = t.toLocaleDateString("id-ID", { year: 'numeric' });
-    // var m = t.toLocaleDateString("id-ID", { month: '2-digit' });
-    // console.log(m);
     cashflowTable.DataTable({
       destroy: true,
       responsive: false,
@@ -189,7 +217,6 @@
       }],
       // mengubah tabel setelah selesai di panggil
       initComplete: function(settings, json) {
-        console.log(settings);
         $('.foot').text(`Total ${json.recordsFiltered} data`).addClass('my-auto');
         $('#cashflowTable_wrapper').find('label').each(function() {
           $(this).parent().append($(this).children());

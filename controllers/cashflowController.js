@@ -125,9 +125,7 @@ const updateCashflow = async (req, res) => {
       { _id: req.body._id },
       { $set: req.body }
     );
-    // console.log(cashflows);
     console.log('Updated...');
-    // res.status(200).json({status: true});
     res.status(200).json(cashflows);
   } catch (error) {
     res.status(400).json({message: error.message});
